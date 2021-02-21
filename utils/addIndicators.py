@@ -9,7 +9,7 @@ pd.options.mode.chained_assignment = None
 
 
 # returns an exponential moving average
-def EMA(df, period=20, observeCol='Adj Close', colName=None):
+def EMA(df : pd.DataFrame, period=20, observeCol='Adj Close', colName=None):
     if len(df) < period:
         raise ValueError('Not enough data')
     if not (type(df) == pd.DataFrame and type(period) == int):
@@ -21,7 +21,7 @@ def EMA(df, period=20, observeCol='Adj Close', colName=None):
 
 
 # returns a simple moving average
-def SMA(df, period=20, colName=None):
+def SMA(df : pd.DataFrame, period=20, colName=None):
     if len(df) < period:
         raise ValueError('Not enough data')
 
@@ -35,7 +35,7 @@ def SMA(df, period=20, colName=None):
 
 
 # returns a stock's daily typical price
-def TP(df, colName='TP'):
+def TP(df : pd.DataFrame, colName='TP'):
     if not type(df) == pd.DataFrame:
         raise TypeError
 
@@ -44,7 +44,7 @@ def TP(df, colName='TP'):
 
 
 # returns the average true range volatility indicator
-def ATR(df, period=14, colName='ATR'):
+def ATR(df : pd.DataFrame, period=14, colName='ATR'):
     if len(df) < period:
         raise ValueError('Not enough data')
 
@@ -70,7 +70,7 @@ def ATR(df, period=14, colName='ATR'):
 
 
 # the keltner channels don't line up 100% perfectly with MarketWatch's keltner's of same params
-def Keltner(df, emaPeriod=20, atrPeriod=20, atrMult=2, colNameUpper='Kelt Upper', colNameLower='Kelt Lower'):
+def Keltner(df : pd.DataFrame, emaPeriod=20, atrPeriod=20, atrMult=2, colNameUpper='Kelt Upper', colNameLower='Kelt Lower'):
     if len(df) < max([emaPeriod, atrPeriod]):
         raise ValueError('Not enough data')
     if not (type(df) == pd.DataFrame and type(emaPeriod) == int and type(atrPeriod) == int and type(atrMult) == int):
@@ -88,7 +88,7 @@ def Keltner(df, emaPeriod=20, atrPeriod=20, atrMult=2, colNameUpper='Kelt Upper'
 
 
 # the bollinger bands don't line up 100% perfectly with MarketWatch's bands of same params
-def Bollinger(df, period=20, nDeviations=2, colNameUpper='Bol Upper', colNameLower='Bol Lower'):
+def Bollinger(df : pd.DataFrame, period=20, nDeviations=2, colNameUpper='Bol Upper', colNameLower='Bol Lower'):
     if len(df) < period:
         raise ValueError('Not enough data')
 
@@ -110,7 +110,7 @@ def Bollinger(df, period=20, nDeviations=2, colNameUpper='Bol Upper', colNameLow
 
 
 # returns whether the stock is currently in a TTM squeeze (bollinger bands are between keltner channels)
-def TTMSqueeze(df, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='TTMSqueeze'):
+def TTMSqueeze(df : pd.DataFrame, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='TTMSqueeze'):
     if len(df) < max([emaPeriod, atrPeriod, bollingerPeriod]):
         raise ValueError('Not enough data')
 
@@ -129,7 +129,7 @@ def TTMSqueeze(df, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nD
 
 
 # returns the relative strength index (technical indicator)
-def RSI(df, period=14, colName='RSI'):
+def RSI(df : pd.DataFrame, period=14, colName='RSI'):
     if len(df) < period:
         raise ValueError('Not enough data')
 
@@ -169,7 +169,7 @@ def RSI(df, period=14, colName='RSI'):
 
 
 # returns the relative strength of a stock, which is how well it's performing relative to 63, 126, 189, and 252 days ago
-def IBD_RS(df, colName='RS'):
+def IBD_RS(df : pd.DataFrame, colName='RS'):
     if len(df) < 252:
         raise ValueError('Not enough data')
     if type(df) != pd.DataFrame:
@@ -189,7 +189,7 @@ def IBD_RS(df, colName='RS'):
 
 
 # returns the relative strength index of a stock according to IBD (ranks stocks 1-100 based on the above function's results)
-def IBD_RelativeStrength(df, ticker, path, smoothing=True, smoothingFactor=5, colName='IBD RS'):
+def IBD_RelativeStrength(df : pd.DataFrame, ticker, path, smoothing=True, smoothingFactor=5, colName='IBD RS'):
     if type(df) != pd.DataFrame or any(type(x) != str for x in [ticker, colName, path]):
         raise TypeError
 
@@ -210,7 +210,7 @@ def IBD_RelativeStrength(df, ticker, path, smoothing=True, smoothingFactor=5, co
 
 
 # returns whether the stock is the highest it's been in the specified number of days
-def recentHigh(df, days=260, colName=None):
+def recentHigh(df : pd.DataFrame, days=260, colName=None):
     if len(df) < days:
         raise ValueError('Not enough data')
 
@@ -224,7 +224,7 @@ def recentHigh(df, days=260, colName=None):
 
 
 # returns whether the stock is the lowest it's been in the specified number of days
-def recentLow(df, days=260, colName=None):
+def recentLow(df : pd.DataFrame, days=260, colName=None):
     if len(df) < days:
         raise ValueError('Not enough data')
 
@@ -238,7 +238,7 @@ def recentLow(df, days=260, colName=None):
 
 
 # returns True while the short-emas are above the long-emas
-def shortOverLong(df, shortEmas=[8], longEmas=[21], withTriggers=False, colName=None):
+def shortOverLong(df : pd.DataFrame, shortEmas=[8], longEmas=[21], withTriggers=False, colName=None):
     if type(shortEmas) != list:
         shortEmas = [shortEmas]
     if type(longEmas) != list:
@@ -278,7 +278,7 @@ def shortOverLong(df, shortEmas=[8], longEmas=[21], withTriggers=False, colName=
 
 
 # identifies when emas crossover; cross can either be golden (short passes long) or death (long passes short)
-def _crossover(df, crossType, shortEmas, longEmas, colName):
+def _crossover(df : pd.DataFrame, crossType, shortEmas, longEmas, colName):
     if len(df) < max(shortEmas + longEmas):
         raise ValueError('Not enough data')
 
@@ -301,17 +301,17 @@ def _crossover(df, crossType, shortEmas, longEmas, colName):
     return df
 
 
-def goldenCross(df, shortEmas=[12], longEmas=[26], colName=None):
+def goldenCross(df : pd.DataFrame, shortEmas=[12], longEmas=[26], colName=None):
     return _crossover(df, 'Golden', shortEmas, longEmas, 'Golden' if colName is None else colName)
 
 
-def deathCross(df, shortEmas=[12], longEmas=[26], colName=None):
+def deathCross(df : pd.DataFrame, shortEmas=[12], longEmas=[26], colName=None):
     return _crossover(df, 'Death', shortEmas, longEmas, 'Death' if colName is None else colName)
 
 
 # selltrigger based on RSI trends indicating the end of an uptrend. works best if the data given begins well before
 # the time period to predict so the downtrend or uptrend can be identified
-def failureSwings(df, rsiPeriod=14, initialUptrend=None, colName=None):
+def failureSwings(df : pd.DataFrame, rsiPeriod=14, initialUptrend=None, colName=None):
     colName = 'FS Uptrend?' if colName is None else colName
     df = RSI(df, rsiPeriod, 'RSI_FS')
     df[colName] = ''
@@ -322,7 +322,7 @@ def failureSwings(df, rsiPeriod=14, initialUptrend=None, colName=None):
     return df
 
 
-def MACD(df, withHistogram=True, withTriggers=False, withTrends=False, colName=None):
+def MACD(df : pd.DataFrame, withHistogram=True, withTriggers=False, withTrends=False, colName=None):
     colName = 'MACD' if colName is None else colName
 
     df = EMA(df, 12, colName='EMA_12 MACD')
@@ -350,7 +350,7 @@ def MACD(df, withHistogram=True, withTriggers=False, withTrends=False, colName=N
     return df
 
 
-def observeTrend(df, observeCol, initialUptrend=None, trendlines=False, colName=None, lineColName=None):
+def observeTrend(df : pd.DataFrame, observeCol, initialUptrend=None, trendlines=False, colName=None, lineColName=None):
     colName = (observeCol + ' Uptrend?') if colName is None else colName
     lineColName = (
         colName + ' Trendline') if lineColName is None else lineColName
@@ -413,7 +413,7 @@ def observeTrend(df, observeCol, initialUptrend=None, trendlines=False, colName=
     return df
 
 
-def volumeForce(df, with_temp=True, colName='VF'):
+def volumeForce(df : pd.DataFrame, with_temp=True, colName='VF'):
     if len(df) < 3:
         raise ValueError('Not enough data')
     df[colName] = np.nan
@@ -449,7 +449,7 @@ def volumeForce(df, with_temp=True, colName='VF'):
     return df
 
 
-def klinger(df, with_temp=True):
+def klinger(df : pd.DataFrame, with_temp=True):
     df = volumeForce(df, with_temp=with_temp, colName='VF_Klinger')
     df = EMA(df, period=34, observeCol='VF_Klinger', colName='klinger34')
     df = EMA(df, period=55, observeCol='VF_Klinger', colName='klinger55')
@@ -462,7 +462,7 @@ def klinger(df, with_temp=True):
     return df
 
 
-def shiftedSqueeze(df, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='Squeeze'):
+def shiftedSqueeze(df : pd.DataFrame, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='Squeeze'):
     if len(df) < max([emaPeriod, atrPeriod, bollingerPeriod]):
         raise ValueError('Not enough data')
 
@@ -481,7 +481,7 @@ def shiftedSqueeze(df, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, b
     return df
 
 
-def upwardsChannel(df, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='Up Channel'):
+def upwardsChannel(df : pd.DataFrame, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, bollingerPeriod=20, nDeviations=2, colName='Up Channel'):
     if len(df) < max([emaPeriod, atrPeriod, bollingerPeriod]):
         raise ValueError('Not enough data')
 
@@ -522,7 +522,7 @@ def upwardsChannel(df, maxPercent=0.01, emaPeriod=20, atrPeriod=20, atrMult=2, b
 
 
 # makes hammer or hanging man indicators (bullish=True for hammer) to indicate trend reversals. if inverted, max_body_distance is from low instead of high
-def hammer(df, trend_days=3, max_real_body_ratio=0.5, max_body_distance=0.2, bullish=True, inverted=False, colName=None):
+def hammer(df : pd.DataFrame, trend_days=3, max_real_body_ratio=0.5, max_body_distance=0.2, bullish=True, inverted=False, colName=None):
     if not 0 < max_real_body_ratio <= 0.5 or not 0 < max_body_distance < 1 or trend_days < 0:
         raise ValueError
 
@@ -553,4 +553,38 @@ def hammer(df, trend_days=3, max_real_body_ratio=0.5, max_body_distance=0.2, bul
         df.loc[i, colName] = abs(opening - close) <= ((high - low) * max_real_body_ratio) and ((
             high - max(opening, close)) < ((high - low) * max_body_distance)) if not inverted else ((
             min(opening, close)) - low < ((high - low) * max_body_distance))
+    return df
+
+
+# creates the "sushi roll" indicator, which indicates trend reversals by checking if the highs/lows of the most 
+# recent half of a period engulf the former half of the period
+def sushi(df : pd.DataFrame, period=10, colName=None):
+    def lows(s):
+        # gets the halfway-point of the series' timeframe
+        n = len(s) // 2
+        return min(s[:n]) > min(s[n:])
+    def highs(s):
+        n = len(s) // 2
+        return max(s[:n]) < max(s[n:])
+
+    colName = colName if colName is not None else 'Sushi'
+    df[colName] = (df['Low'].rolling(period).apply(lows) == True) & (df['High'].rolling(period).apply(highs) == True)
+    # to prevent the same signal from being repeated, if a signal already happened within a period prior, sets the current signal to 0
+    df[colName] = df[colName].rolling(period // 2).apply(lambda s: s[-1] and not any(s[:-1]))
+    return df
+
+
+# checks the trend using a moving average. If 75% of the previous closes considered in the ma are above the ma, the trend is up;
+# if 75% are below the ma, the trend is down.  If at least 25% are not in line with one of these, the trend is neutral. Threshold is adjustable.
+# Has two columns to indicate trend; one is true if the trend is up and one is true if it's down. If neither are true the trend is neutral.
+def simplePrevailingTrend(df, period, threshold=0.75, observeCol='Close', colName=None):
+    colNameUp = f'{colname} Up?' if colName is not None else f'{observeCol} Uptrend?'
+    colNameDown = f'{colname} Down?' if colName is not None else f'{observeCol} Downtrend?'
+
+    ma = df[observeCol].rolling(period).mean()
+    up = df[observeCol] > ma
+    down = df[observeCol] < ma
+    
+    df[colNameUp] = up.rolling(period).sum() / period > threshold
+    df[colNameDown] = down.rolling(period).sum() / period > threshold
     return df
